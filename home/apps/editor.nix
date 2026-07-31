@@ -6,9 +6,11 @@
   # -------------------------------------------------------------------------
   programs.ghostty = {
     enable = true;
+   shellIntegration = {
     enableFishIntegration = true;
     # enableBashIntegration = true;
     # enableZshIntegration = true;
+  };
 
     settings = {
       font-family = "Hack Nerd Font";
