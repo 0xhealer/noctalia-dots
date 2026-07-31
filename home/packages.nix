@@ -38,9 +38,9 @@
     loupe
     vesktop
 
-    xfce.thunar
-    xfce.thunar-archive-plugin
-    xfce.thunar-volman
+    pkgs.thunar
+    pkgs.thunar-archive-plugin
+    pkgs.thunar-volman
 
     # Image Viewer for Quick Previews
     loupe

@@ -20,7 +20,7 @@
     fastfetch
     unzip
     nixd
-    nixfmt-rfc166
+    nixfmt-rfc-style
     lua-language-server
     stylua
     p7zip
