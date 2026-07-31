@@ -1,9 +1,7 @@
 { pkgs, config, inputs, lib, ... }:
 
 {
-  programs.niri = {
-    enable = true;
-    
+  programs.niri = { 
     # Settings configuration
     settings = {
       # Input Settings
