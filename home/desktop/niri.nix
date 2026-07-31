@@ -13,7 +13,7 @@
         };
         touchpad = {
           tap = true;
-          d触-to-drag = true;
+          drag-to-drag = true;
           natural-scroll = true;
         };
         mouse = {
