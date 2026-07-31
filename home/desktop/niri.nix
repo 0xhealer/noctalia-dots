@@ -102,13 +102,13 @@
 
         # Workspace Management
         "Mod+1".action = focus-workspace 1;
-        "Mod+2".action = focus-workspace 2;
-        "Mod+3".action = focus-workspace 3;
-        "Mod+4".action = focus-workspace 4;
-        "Mod+Shift+1".action = move-column-to-workspace 1;
-        "Mod+Shift+2".action = move-column-to-workspace 2;
-        "Mod+Shift+3".action = move-column-to-workspace 3;
-        "Mod+Shift+4".action = move-column-to-workspace 4;
+  "Mod+2".action = focus-workspace 2;
+  "Mod+3".action = focus-workspace 3;
+  "Mod+4".action = focus-workspace 4;
+  "Mod+Shift+1".action.move-column-to-workspace = [ 1 ];
+  "Mod+Shift+2".action.move-column-to-workspace = [ 2 ];
+  "Mod+Shift+3".action.move-column-to-workspace = [ 3 ];
+  "Mod+Shift+4".action.move-column-to-workspace = [ 4 ];
 
         # System Controls
         "Mod+Shift+E".action = quit;
