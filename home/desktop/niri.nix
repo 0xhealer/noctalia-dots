@@ -11,7 +11,7 @@
         };
         touchpad = {
           tap = true;
-          tap-to-drag = true;
+          drag = true;
           natural-scroll = true;
         };
         mouse = {
