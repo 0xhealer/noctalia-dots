@@ -5,6 +5,13 @@ let
 in
 {
   # -------------------------------------------------------------------------
+  # Import Spicetify Home Manager Module
+  # -------------------------------------------------------------------------
+  imports = [
+    inputs.spicetify-nix.homeManagerModules.default
+  ];
+
+  # -------------------------------------------------------------------------
   # Spicetify Configuration (Declarative Spotify Customization)
   # -------------------------------------------------------------------------
   programs.spicetify = {
