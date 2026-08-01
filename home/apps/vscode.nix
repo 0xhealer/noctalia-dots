@@ -36,19 +36,17 @@ in
       ];
 
       userSettings = {
-        # Nix Config
+
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nil";
         "nix.serverSettings" = { "nil" = { "formatting" = { "command" = [ "nixfmt" ]; }; }; };
 
-        # Typography
         "editor.fontSize" = 18;
         "editor.fontFamily" = "AnonymicePro Nerd Font";
         "editor.fontLigatures" = true;
         "terminal.integrated.fontFamily" = "AnonymicePro Nerd Font";
         "terminal.integrated.fontSize" = 14;
 
-        # UI & Layout
         "workbench.editor.showTabs" = "single";
         "editor.stickyScroll.enabled" = false;
         "window.zoomLevel" = 0.5;
@@ -60,10 +58,6 @@ in
         "editor.minimap.enabled" = false;
         "editor.formatOnSave" = true;
 
-        # -------------------------------------------------------------------
-        # Blur & Transparency Overrides
-        # Makes structural elements 100% transparent so Niri backdrop blur shines through
-        # -------------------------------------------------------------------
         "workbench.colorCustomizations" = {
           "editor.background" = "#00000000";
           "sideBar.background" = "#00000000";
@@ -77,12 +71,10 @@ in
           "breadcrumb.background" = "#00000000";
         };
 
-        # Disable AI & Telemetry
         "chat.disableAIFeatures" = true;
         "telemetry.telemetryLevel" = "off";
         "telemetry.feedback.enabled" = false;
 
-        # Auto Save & Files
         "files.autoSave" = "onWindowChange";
         "extensions.ignoreRecommendations" = true;
         "git.autofetch" = true;

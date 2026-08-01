@@ -4,20 +4,15 @@ let
   c = config.lib.stylix.colors.withHashtag;
 in
 {
-  # -------------------------------------------------------------------------
-  # Declarative Neovim Configuration
-  # -------------------------------------------------------------------------
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
 
-    # -----------------------------------------------------------------------
-    # Neovim Plugins
-    # -----------------------------------------------------------------------
     plugins = with pkgs.vimPlugins; [
-      # Syntax Highlighting & Parsing
+
       (nvim-treesitter.withPlugins (p: with p; [
         nix
         lua
@@ -31,28 +26,19 @@ in
         go
       ]))
 
-      # LSP & Completion
       nvim-lspconfig
 
-      # Colorscheme — colors come from Stylix, interpolated directly at
-      # build time at the top of initLua below.
       base16-nvim
 
-      # Navigation & UI Tools
       telescope-nvim
       plenary-nvim
       nvim-web-devicons
       lualine-nvim
       gitsigns-nvim
 
-      # Quality of Life
-      vim-sleuth # Auto-detect indentation settings
+      vim-sleuth
     ];
 
-    # -----------------------------------------------------------------------
-    # Embedded Lua Configuration (init.lua)
-    # -----------------------------------------------------------------------
-    initLua = ''
     initLua = ''
       -- Stylix-driven colorscheme (base16), interpolated at build time —
       -- see ../style/stylix.nix for how the underlying palette is

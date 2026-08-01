@@ -4,11 +4,7 @@ let
   c = config.lib.stylix.colors.withHashtag;
 in
 {
-  # Stylix has a native starship target (stylix.targets.starship.enable
-  # in ../style/stylix.nix) that exposes its colors to starship — but
-  # the actual style strings below are still hand-wired to specific
-  # base16 slots via `c`, for predictable control over which color goes
-  # where rather than trusting an unverified default mapping.
+
   programs.starship = {
     enable = true;
     enableBashIntegration = true;

@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-   # Zoxide (Smart `cd` alternative)
+
   programs.zoxide = {
     enable = true;
     enableBashIntegration = true;
@@ -9,15 +9,13 @@
     enableNushellIntegration = true;
   };
 
-  # Fzf (Fuzzy Finder)
   programs.fzf = {
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
-    enableFishIntegration = true; # default shell is fish (see apps/shell.nix)
+    enableFishIntegration = true;
   };
 
-  # Bat (`cat` clone with syntax highlighting)
   programs.bat = {
     enable = true;
     config = {
@@ -25,7 +23,6 @@
     };
   };
 
-  # Eza (`ls` replacement with icons)
   programs.eza = {
     enable = true;
     enableBashIntegration = true;

@@ -2,11 +2,10 @@
 
 {
   imports = [
-    ./hardware-configuration.nix # Auto-copied by bootstrap script
-    ../../modules                # Imports system modules from /modules
+    ./hardware-configuration.nix
+    ../../modules
   ];
 
-  # Primary User Account (Matches home-manager.users.healer in flake.nix)
   users.users.healer = {
     isNormalUser = true;
     description = "healer";
@@ -14,6 +13,5 @@
     shell = pkgs.fish;
   };
 
-  # Enable Fish shell system-wide so it gets added to /etc/shells
   programs.fish.enable = true;
 }

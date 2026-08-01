@@ -1,9 +1,6 @@
 {
   description = "Noctalia Dots - Modular NixOS Configuration";
 
-  # Offered on the very first build (before nix.settings in
-  # modules/packages.nix has ever taken effect). Nix will prompt once to
-  # trust this — say yes, or it'll compile Noctalia from source instead.
   nixConfig = {
     extra-substituters = [ "https://noctalia.cachix.org" ];
     extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
@@ -45,7 +42,7 @@
 
     niri = {
       url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";  
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix = {
@@ -55,13 +52,7 @@
 
     noctalia = {
       url = "github:noctalia-dev/noctalia";
-      # NOTE: deliberately NOT following the shared nixpkgs here.
-      # Noctalia's docs are explicit that inputs.nixpkgs.follows disables
-      # its Cachix binary cache — with it set, Noctalia's Qt/C++/Rust
-      # shell compiles from source on every rebuild instead of pulling a
-      # prebuilt binary. The tradeoff is a second nixpkgs copy in the
-      # closure; on anything resource-capped (a VM, for instance) that's
-      # a much better trade than a from-source Noctalia build.
+
     };
   };
 
@@ -82,10 +73,10 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              
+
               home-manager.backupFileExtension = "backup";
               home-manager.extraSpecialArgs = { inherit inputs; };
-              
+
               home-manager.users.healer = {
                 imports = [
                   ./home/default.nix

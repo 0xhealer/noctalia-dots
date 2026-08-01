@@ -1,13 +1,7 @@
 { pkgs, config, ... }:
 
 {
-  # -------------------------------------------------------------------------
-  # Ghostty Terminal
-  # -------------------------------------------------------------------------
-  # No confirmed Stylix target for Ghostty (see ../style/stylix.nix) —
-  # colors are hand-wired directly from config.lib.stylix.colors, which
-  # is Stylix's own documented mechanism for targets it doesn't natively
-  # support. Regenerates whenever stylix.image changes + rebuild.
+
   programs.ghostty = {
     enable = true;
     enableFishIntegration = true;
@@ -47,12 +41,6 @@
     };
   };
 
-  # -------------------------------------------------------------------------
-  # Kitty Terminal
-  # -------------------------------------------------------------------------
-  # Colors owned entirely by Stylix's kitty target now (stylix.targets.
-  # kitty.enable in ../style/stylix.nix) — no manual color include here
-  # anymore. Only non-color behavior settings stay in this file.
   programs.kitty = {
     enable = true;
     shellIntegration = {
@@ -70,12 +58,6 @@
     };
   };
 
-  # -------------------------------------------------------------------------
-  # Alacritty Terminal
-  # -------------------------------------------------------------------------
-  # Colors owned entirely by Stylix's alacritty target now
-  # (stylix.targets.alacritty.enable in ../style/stylix.nix) — no manual
-  # color import here anymore.
   programs.alacritty = {
     enable = true;
 

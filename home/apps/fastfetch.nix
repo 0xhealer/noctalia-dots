@@ -4,15 +4,7 @@ let
   c = config.lib.stylix.colors.withHashtag;
 in
 {
-  # -------------------------------------------------------------------------
-  # Fastfetch System Information Tool
-  # -------------------------------------------------------------------------
-  # No confirmed Stylix target for fastfetch — key/title colors are
-  # hand-wired to config.lib.stylix.colors directly (same mechanism as
-  # Ghostty in ../apps/editor.nix), so nothing here is a static hex.
-  # Module list/style adapted from israrkhan-cys/Arch-_hyprland_rice's
-  # fastfetch config, NixOS-ified (no pacman reference, no personal logo
-  # file that doesn't exist on this machine).
+
   programs.fastfetch = {
     enable = true;
 
