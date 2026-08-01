@@ -31,6 +31,10 @@
       # LSP & Completion
       nvim-lspconfig
 
+      # Colorscheme — colors come from a Matugen-generated Lua file
+      # loaded at the top of extraLuaConfig below.
+      base16-nvim
+
       # Navigation & UI Tools
       telescope-nvim
       plenary-nvim
@@ -46,6 +50,26 @@
     # Embedded Lua Configuration (init.lua)
     # -----------------------------------------------------------------------
     extraLuaConfig = ''
+      -- Matugen-driven colorscheme (base16), regenerated on every wallpaper
+      -- change by the same matugen run that themes the terminal/starship/
+      -- fastfetch (see ../style/matugen.nix). Falls back to no colorscheme
+      -- on a very first boot before matugen has ever produced this file.
+      local ok, base16_colors = pcall(dofile, vim.fn.expand('~/.config/nvim/matugen-colors.lua'))
+      if ok and base16_colors then
+        require('base16-colorscheme').setup(base16_colors)
+      end
+
+      -- Don't let Neovim paint its own opaque background — the terminal
+      -- (Ghostty/Kitty/Alacritty) already supplies transparency via
+      -- background-opacity, and niri blurs behind it.
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        callback = function()
+          for _, group in ipairs({ 'Normal', 'NormalNC', 'NormalFloat', 'SignColumn', 'LineNr', 'EndOfBuffer' }) do
+            vim.api.nvim_set_hl(0, group, { bg = 'none' })
+          end
+        end,
+      })
+
       -- Set mapleader to space before anything else
       vim.g.mapleader = ' '
       vim.g.maplocalleader = ' '

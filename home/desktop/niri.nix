@@ -58,7 +58,7 @@
 
       # Noctalia-recommended window/layer rules
       # https://docs.noctalia.dev/v5/compositor-settings/niri/
-      window-rule = [
+      window-rules = [
         {
           # Rounded corners for a modern look; clip contents to match.
           geometry-corner-radius = 20.0;
@@ -71,15 +71,47 @@
           default-column-width.fixed = 1080;
           default-window-height.fixed = 920;
         }
+        {
+          # Blur behind every window (paired with the GTK/terminal
+          # transparency set in ../style/matugen.nix and ../apps/editor.nix).
+          # xray off so it reads as frosted glass rather than literally
+          # see-through. Requires niri >= 26.04 — if `nixos-rebuild
+          # dry-build` errors on `background-effect`, delete this rule
+          # (and the layer-rules/blur blocks below) and update niri.
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
       ];
 
-      layer-rule = [
+      layer-rules = [
         {
           # Pin the (now stationary) wallpaper layer behind the overview.
           matches = [ { namespace = "^noctalia-wallpaper"; } ];
           place-within-backdrop = true;
         }
+        {
+          # Noctalia bar/panels/dock/notifications/OSD: keep blur but
+          # disable xray so they stay legible instead of fully see-through.
+          matches = [ { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; } ];
+          background-effect.xray = false;
+        }
+        {
+          matches = [ { namespace = "noctalia-window-switcher"; } ];
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
       ];
+
+      blur = {
+        passes = 2;
+        offset = 3.0;
+        noise = 0.03;
+        saturation = 1.0;
+      };
 
       debug = {
         # Allows notification actions and window activation from Noctalia.
