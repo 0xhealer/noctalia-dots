@@ -32,7 +32,7 @@
       nvim-lspconfig
 
       # Colorscheme — colors come from a Matugen-generated Lua file
-      # loaded at the top of extraLuaConfig below.
+      # loaded at the top of initLua below.
       base16-nvim
 
       # Navigation & UI Tools
@@ -49,7 +49,7 @@
     # -----------------------------------------------------------------------
     # Embedded Lua Configuration (init.lua)
     # -----------------------------------------------------------------------
-    extraLuaConfig = ''
+    initLua = ''
       -- Matugen-driven colorscheme (base16), regenerated on every wallpaper
       -- change by the same matugen run that themes the terminal/starship/
       -- fastfetch (see ../style/matugen.nix). Falls back to no colorscheme

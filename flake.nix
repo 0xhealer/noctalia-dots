@@ -1,6 +1,14 @@
 {
   description = "Noctalia Dots - Modular NixOS Configuration";
 
+  # Offered on the very first build (before nix.settings in
+  # modules/packages.nix has ever taken effect). Nix will prompt once to
+  # trust this — say yes, or it'll compile Noctalia from source instead.
+  nixConfig = {
+    extra-substituters = [ "https://noctalia.cachix.org" ];
+    extra-trusted-public-keys = [ "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4=" ];
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
@@ -42,7 +50,13 @@
 
     noctalia = {
       url = "github:noctalia-dev/noctalia";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # NOTE: deliberately NOT following the shared nixpkgs here.
+      # Noctalia's docs are explicit that inputs.nixpkgs.follows disables
+      # its Cachix binary cache — with it set, Noctalia's Qt/C++/Rust
+      # shell compiles from source on every rebuild instead of pulling a
+      # prebuilt binary. The tradeoff is a second nixpkgs copy in the
+      # closure; on anything resource-capped (a VM, for instance) that's
+      # a much better trade than a from-source Noctalia build.
     };
   };
 

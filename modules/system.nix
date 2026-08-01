@@ -11,6 +11,21 @@
     auto-optimise-store = true; # Automatically deduplicate nix store
   };
 
+  # Automatic garbage collection — without this, every generation's
+  # packages stay in /nix/store forever and disk usage only grows.
+  # auto-optimise-store (above) dedupes identical files across store
+  # paths, but doesn't delete anything unreferenced — this does.
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
+  # Cap how many old boot entries stick around (keeps /boot from
+  # filling up on smaller ESPs — a real concern on a laptop's SSD in a
+  # way it wasn't on a 250GB VM disk).
+  boot.loader.systemd-boot.configurationLimit = 10;
+
   # Power Management Daemon
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;

@@ -36,7 +36,7 @@
         builtin = "Catppuccin";
       };
 
-      # Wallpaper is already handled declaratively by swww + waypaper +
+      # Wallpaper is already handled declaratively by awww + waypaper +
       # matugen (see ./tools.nix and ../style/matugen.nix), so Noctalia's
       # own wallpaper/backdrop management is turned off to avoid two
       # systems fighting over the same job. This pairs with the

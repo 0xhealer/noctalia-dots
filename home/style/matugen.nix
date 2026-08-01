@@ -13,10 +13,17 @@
   # -------------------------------------------------------------------------
   xdg.configFile."matugen/config.toml".text = ''
     [config]
-    wallpaper_tool = "Swww"
+    # (no wallpaper_tool key here — that was matugen's pre-1.0 config
+    # syntax; the current schema is the [config.wallpaper] table below)
 
     [config.wallpaper]
-    command = "swww img --transition-type outer --transition-fps 60"
+    # awww is swww's upstream rename (binary and nixpkgs package both
+    # renamed — see ../packages.nix and ../desktop/niri.nix). `command`
+    # must be just the executable; args go in `arguments`, not appended
+    # to the command string.
+    command = "awww"
+    arguments = [ "img", "--transition-type", "outer", "--transition-fps", "60" ]
+    set = true
 
     # --- Target Templates ---
 

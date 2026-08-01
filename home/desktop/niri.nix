@@ -46,7 +46,7 @@
         };
 
         # "Option 2: Stationary Wallpaper" from Noctalia's niri docs —
-        # since swww/waypaper already own the wallpaper (Noctalia's own
+        # since awww/waypaper already own the wallpaper (Noctalia's own
         # wallpaper.enabled is set to false in ./noctalia.nix), keep the
         # workspace background transparent so it stays visible everywhere.
         background-color = "transparent";
@@ -130,7 +130,7 @@
 
       # Autostart Programs
       spawn-at-startup = [
-        { command = [ "swww-daemon" ]; }
+        { command = [ "awww-daemon" ]; }
         { command = [ "waypaper" "--restore" ]; }
         { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
         # Launches the Noctalia shell (bar, launcher, notifications,

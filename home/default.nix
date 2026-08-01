@@ -25,8 +25,11 @@
     };
   };
 
-  # Allow unfree packages in Home Manager context
-  nixpkgs.config.allowUnfree = true;
+  # NOTE: nixpkgs.config.allowUnfree is intentionally NOT set here.
+  # hosts/nixos uses home-manager.useGlobalPkgs, which shares the
+  # system's nixpkgs (and its config) with Home Manager — it's set once
+  # in modules/packages.nix instead. Setting it again here is deprecated
+  # and will eventually be a hard error when useGlobalPkgs is on.
 
   # Let Home Manager install and manage itself
   programs.home-manager.enable = true;

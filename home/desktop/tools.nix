@@ -21,7 +21,7 @@
     language = en
     folder = ~/.local/share/noctalia-dots/assets/wallpapers
     wallpaper = ~/.local/share/noctalia-dots/assets/wallpapers/6.png
-    backend = swww
+    backend = awww
     fill = fill
     sort = name
     subfolders = False

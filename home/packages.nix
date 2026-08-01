@@ -11,7 +11,7 @@
 
     # Wayland, Theming & Desktop Utilities
     waypaper
-    swww
+    awww
     matugen
     grim
     slurp
@@ -33,8 +33,11 @@
 
     # User GUI Applications, Productivity & Media
     vscode
+    # NOTE: no plain `spotify` package here — programs.spicetify.enable
+    # (see ../style/spicetify.nix) already installs its own themed
+    # Spotify wrapper. Listing both causes a buildEnv conflict: two
+    # different packages each trying to provide bin/spotify.
     obsidian
-    spotify
     mpv
     vlc
     vesktop
