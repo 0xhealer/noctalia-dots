@@ -29,9 +29,7 @@ in
       ])
 
       (plain "focus-ring" [
-        (leaf "width" 2)
-        (leaf "active-color" "#7aa2f7")
-        (leaf "inactive-color" "#414868")
+        (flag "off")
       ])
 
       (plain "border" [

@@ -61,7 +61,17 @@ echo "==> Step 6: Updating the niri-flake input..."
 nix flake lock --update-input niri --extra-experimental-features "nix-command flakes"
 git add -f flake.lock
 
-echo "==> Step 7: Rebuilding system with Flakes (this can take a while on first run)..."
+echo "==> Step 7: Trusting this repo for root's git operations..."
+# Git refuses to operate on a repository owned by a different user than
+# the one running the command (a security check since CVE-2022-24765).
+# Since this flake lives in $HOME (owned by you) but the actual rebuild
+# runs via sudo (as root), root's git sees "dubious ownership" and
+# nixos-rebuild's internal flake-locking step fails with a generic
+# "Permission denied" on flake.lock as a result -- not a real filesystem
+# permission problem. This tells root's git to trust this one directory.
+sudo git config --global --add safe.directory "$TARGET_DIR"
+
+echo "==> Step 8: Rebuilding system with Flakes (this can take a while on first run)..."
 # NOTE: swap is no longer set up here with shell commands -- on NixOS,
 # /etc/fstab is generated declaratively and read-only at runtime, so
 # `tee -a /etc/fstab` (what an earlier version of this script tried)
