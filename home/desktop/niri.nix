@@ -1,169 +1,155 @@
 { pkgs, config, inputs, lib, ... }:
 
+let
+  inherit (inputs.niri.lib.kdl) node plain leaf flag;
+in
 {
-  programs.niri = {
-    settings = {
+  programs.niri.config = [
+    (plain "input" [
+      (plain "keyboard" [
+        (plain "xkb" [
+          (leaf "layout" "us")
+        ])
+      ])
+      (plain "touchpad" [
+        (flag "tap")
+        (flag "drag")
+        (flag "natural-scroll")
+      ])
+      (plain "mouse" [])
+    ])
 
-      input = {
-        keyboard.xkb = {
-          layout = "us";
-        };
-        touchpad = {
-          tap = true;
-          drag = true;
-          natural-scroll = true;
-        };
-        mouse = {
-          natural-scroll = false;
-        };
-      };
+    (plain "layout" [
+      (leaf "gaps" 12)
+      (leaf "center-focused-column" "never")
+      (leaf "background-color" "transparent")
 
-      outputs = {
+      (plain "default-column-width" [
+        (leaf "proportion" 0.5)
+      ])
 
-      };
+      (plain "focus-ring" [
+        (leaf "width" 2)
+        (leaf "active-color" "#7aa2f7")
+        (leaf "inactive-color" "#414868")
+      ])
 
-      layout = {
-        gaps = 12;
-        center-focused-column = "never";
+      (plain "border" [
+        (flag "off")
+      ])
+    ])
 
-        default-column-width = {
-          proportion = 0.5;
-        };
+    (plain "overview" [
+      (plain "workspace-shadow" [
+        (flag "off")
+      ])
+    ])
 
-        focus-ring = {
-          enable = true;
-          width = 2;
-          active.color = lib.mkForce "#7aa2f7";
-          inactive.color = lib.mkForce "#414868";
-        };
+    (plain "window-rule" [
+      (leaf "geometry-corner-radius" { top-left = 20.0; top-right = 20.0; bottom-left = 20.0; bottom-right = 20.0; })
+      (flag "clip-to-geometry")
+    ])
 
-        border = {
-          enable = false;
-        };
+    (plain "window-rule" [
+      (leaf "match" { app-id = "^dev\\.noctalia\\.Noctalia$"; })
+      (flag "open-floating")
+      (plain "default-column-width" [ (leaf "fixed" 1080) ])
+      (plain "default-window-height" [ (leaf "fixed" 920) ])
+    ])
 
-        background-color = "transparent";
-      };
+    (plain "window-rule" [
+      (plain "background-effect" [
+        (leaf "blur" true)
+        (leaf "xray" false)
+      ])
+    ])
 
-      overview = {
-        workspace-shadow.enable = false;
-      };
+    (plain "layer-rule" [
+      (leaf "match" { namespace = "^noctalia-wallpaper"; })
+      (flag "place-within-backdrop")
+    ])
 
-      window-rules = [
-        {
+    (plain "layer-rule" [
+      (leaf "match" { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; })
+      (plain "background-effect" [
+        (leaf "xray" false)
+      ])
+    ])
 
-          geometry-corner-radius = {
-            top-left = 20.0;
-            top-right = 20.0;
-            bottom-left = 20.0;
-            bottom-right = 20.0;
-          };
-          clip-to-geometry = true;
-        }
-        {
+    (plain "layer-rule" [
+      (leaf "match" { namespace = "noctalia-window-switcher"; })
+      (plain "background-effect" [
+        (leaf "blur" true)
+        (leaf "xray" false)
+      ])
+    ])
 
-          matches = [ { app-id = "^dev\\.noctalia\\.Noctalia$"; } ];
-          open-floating = true;
-          default-column-width.fixed = 1080;
-          default-window-height.fixed = 920;
-        }
-        {
-          background-effect = {
-            blur = true;
-            xray = false;
-          };
-        }
-      ];
+    (plain "blur" [
+      (leaf "passes" 2)
+      (leaf "offset" 3.0)
+      (leaf "noise" 0.03)
+      (leaf "saturation" 1.0)
+    ])
 
-      layer-rules = [
-        {
-          matches = [ { namespace = "^noctalia-wallpaper"; } ];
-          place-within-backdrop = true;
-        }
-        {
-          matches = [ { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; } ];
-          background-effect.xray = false;
-        }
-        {
-          matches = [ { namespace = "noctalia-window-switcher"; } ];
-          background-effect = {
-            blur = true;
-            xray = false;
-          };
-        }
-      ];
+    (leaf "spawn-at-startup" [ "awww-daemon" ])
+    (leaf "spawn-at-startup" [ "waypaper" "--restore" ])
+    (leaf "spawn-at-startup" [ "wl-paste" "--watch" "cliphist" "store" ])
+    (leaf "spawn-at-startup" [ "noctalia" ])
 
-      blur = {
-        passes = 2;
-        offset = 3.0;
-        noise = 0.03;
-        saturation = 1.0;
-      };
+    (plain "binds" [
+      (plain "Mod+Return" [ (leaf "spawn" [ "ghostty" ]) ])
+      (plain "Mod+Shift+Return" [ (leaf "spawn" [ "kitty" ]) ])
+      (plain "Mod+B" [ (leaf "spawn" [ "zen" ]) ])
+      (plain "Mod+E" [ (leaf "spawn" [ "thunar" ]) ])
+      (plain "Mod+Shift+D" [ (leaf "spawn" [ "fuzzel" ]) ])
 
-      spawn-at-startup = [
-        { command = [ "awww-daemon" ]; }
-        { command = [ "waypaper" "--restore" ]; }
-        { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
+      (plain "Print" [ (leaf "spawn" [ "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -" ]) ])
+      (plain "Shift+Print" [ (leaf "spawn" [ "sh" "-c" "grim ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png" ]) ])
 
-        { command = [ "noctalia" ]; }
-      ];
+      (plain "Mod+Space" [ (leaf "spawn" [ "noctalia" "msg" "panel-toggle" "launcher" ]) ])
+      (plain "Mod+S" [ (leaf "spawn" [ "noctalia" "msg" "panel-toggle" "control-center" ]) ])
+      (plain "Mod+Comma" [ (leaf "spawn" [ "noctalia" "msg" "settings-toggle" ]) ])
+      (plain "Alt+Tab" [ (leaf "spawn" [ "noctalia" "msg" "window-switcher" ]) ])
 
-      binds = with config.lib.niri.actions; {
+      (plain "XF86AudioRaiseVolume" [ (leaf "spawn" [ "noctalia" "msg" "volume-up" ]) ])
+      (plain "XF86AudioLowerVolume" [ (leaf "spawn" [ "noctalia" "msg" "volume-down" ]) ])
+      (plain "XF86AudioMute" [ (leaf "spawn" [ "noctalia" "msg" "volume-mute" ]) ])
+      (plain "XF86MonBrightnessUp" [ (leaf "spawn" [ "noctalia" "msg" "brightness-up" ]) ])
+      (plain "XF86MonBrightnessDown" [ (leaf "spawn" [ "noctalia" "msg" "brightness-down" ]) ])
 
-        "Mod+Return".action = spawn "ghostty";
-        "Mod+Shift+Return".action = spawn "kitty";
-        "Mod+B".action = spawn "zen";
-        "Mod+E".action = spawn "thunar";
-        "Mod+Shift+D".action = spawn "fuzzel";
+      (plain "Mod+Q" [ (flag "close-window") ])
+      (plain "Mod+F" [ (flag "maximize-column") ])
+      (plain "Mod+Shift+F" [ (flag "fullscreen-window") ])
+      (plain "Mod+C" [ (flag "center-column") ])
 
-        "Print".action = spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
-        "Shift+Print".action = spawn "sh" "-c" "grim ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png";
+      (plain "Mod+Left" [ (flag "focus-column-left") ])
+      (plain "Mod+Right" [ (flag "focus-column-right") ])
+      (plain "Mod+Up" [ (flag "focus-window-up") ])
+      (plain "Mod+Down" [ (flag "focus-window-down") ])
+      (plain "Mod+H" [ (flag "focus-column-left") ])
+      (plain "Mod+L" [ (flag "focus-column-right") ])
+      (plain "Mod+K" [ (flag "focus-window-up") ])
+      (plain "Mod+J" [ (flag "focus-window-down") ])
 
-        "Mod+Space".action = spawn "noctalia" "msg" "panel-toggle" "launcher";
-        "Mod+S".action = spawn "noctalia" "msg" "panel-toggle" "control-center";
-        "Mod+Comma".action = spawn "noctalia" "msg" "settings-toggle";
-        "Alt+Tab".action = spawn "noctalia" "msg" "window-switcher";
+      (plain "Mod+Shift+Left" [ (flag "move-column-left") ])
+      (plain "Mod+Shift+Right" [ (flag "move-column-right") ])
+      (plain "Mod+Shift+H" [ (flag "move-column-left") ])
+      (plain "Mod+Shift+L" [ (flag "move-column-right") ])
 
-        "XF86AudioRaiseVolume".action = spawn "noctalia" "msg" "volume-up";
-        "XF86AudioLowerVolume".action = spawn "noctalia" "msg" "volume-down";
-        "XF86AudioMute".action = spawn "noctalia" "msg" "volume-mute";
-        "XF86MonBrightnessUp".action = spawn "noctalia" "msg" "brightness-up";
-        "XF86MonBrightnessDown".action = spawn "noctalia" "msg" "brightness-down";
+      (plain "Mod+R" [ (flag "switch-preset-column-width") ])
+      (plain "Mod+Minus" [ (leaf "set-column-width" "-10%") ])
+      (plain "Mod+Equal" [ (leaf "set-column-width" "+10%") ])
 
-        "Mod+Q".action = close-window;
-        "Mod+F".action = maximize-column;
-        "Mod+Shift+F".action = fullscreen-window;
-        "Mod+C".action = center-column;
+      (plain "Mod+1" [ (leaf "focus-workspace" 1) ])
+      (plain "Mod+2" [ (leaf "focus-workspace" 2) ])
+      (plain "Mod+3" [ (leaf "focus-workspace" 3) ])
+      (plain "Mod+4" [ (leaf "focus-workspace" 4) ])
+      (plain "Mod+Shift+1" [ (leaf "move-column-to-workspace" 1) ])
+      (plain "Mod+Shift+2" [ (leaf "move-column-to-workspace" 2) ])
+      (plain "Mod+Shift+3" [ (leaf "move-column-to-workspace" 3) ])
+      (plain "Mod+Shift+4" [ (leaf "move-column-to-workspace" 4) ])
 
-        "Mod+Left".action = focus-column-left;
-        "Mod+Right".action = focus-column-right;
-        "Mod+Up".action = focus-window-up;
-        "Mod+Down".action = focus-window-down;
-        "Mod+H".action = focus-column-left;
-        "Mod+L".action = focus-column-right;
-        "Mod+K".action = focus-window-up;
-        "Mod+J".action = focus-window-down;
-
-        "Mod+Shift+Left".action = move-column-left;
-        "Mod+Shift+Right".action = move-column-right;
-        "Mod+Shift+H".action = move-column-left;
-        "Mod+Shift+L".action = move-column-right;
-
-        "Mod+R".action = switch-preset-column-width;
-        "Mod+Minus".action = set-column-width "-10%";
-        "Mod+Equal".action = set-column-width "+10%";
-
-        "Mod+1".action = focus-workspace 1;
-  "Mod+2".action = focus-workspace 2;
-  "Mod+3".action = focus-workspace 3;
-  "Mod+4".action = focus-workspace 4;
-  "Mod+Shift+1".action.move-column-to-workspace = [ 1 ];
-  "Mod+Shift+2".action.move-column-to-workspace = [ 2 ];
-  "Mod+Shift+3".action.move-column-to-workspace = [ 3 ];
-  "Mod+Shift+4".action.move-column-to-workspace = [ 4 ];
-
-        "Mod+Shift+E".action = quit;
-      };
-
-    };
-  };
+      (plain "Mod+Shift+E" [ (flag "quit") ])
+    ])
+  ];
 }

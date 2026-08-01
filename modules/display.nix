@@ -1,9 +1,8 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 
 {
 
   programs.niri.enable = true;
-  programs.niri.package = inputs.niri.packages.${pkgs.system}.niri-unstable;
 
   services.displayManager.sddm = {
     enable = true;

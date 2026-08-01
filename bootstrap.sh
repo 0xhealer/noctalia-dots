@@ -50,7 +50,18 @@ echo "==> Step 5: Clearing stale Home Manager backup files from earlier runs..."
 # activation isn't blocked waiting on manual cleanup.
 find "$HOME" -maxdepth 3 -name "*.${BACKUP_EXT}" -print -delete 2>/dev/null || true
 
-echo "==> Step 6: Rebuilding system with Flakes (this can take a while on first run)..."
+echo "==> Step 6: Updating the niri-flake input..."
+# niri-flake's Nix schema (which niri settings are valid to write in
+# home/desktop/niri.nix) is baked into whatever commit of niri-flake
+# is pinned in flake.lock -- it does NOT automatically track whichever
+# niri package (stable/niri-unstable) is selected in modules/display.nix.
+# Newer niri features (like blur, added in niri 26.04) only become
+# usable here once niri-flake's own pinned commit has added schema
+# support for them, which requires updating this specific input.
+nix flake lock --update-input niri --extra-experimental-features "nix-command flakes"
+git add -f flake.lock
+
+echo "==> Step 7: Rebuilding system with Flakes (this can take a while on first run)..."
 # NOTE: swap is no longer set up here with shell commands -- on NixOS,
 # /etc/fstab is generated declaratively and read-only at runtime, so
 # `tee -a /etc/fstab` (what an earlier version of this script tried)
