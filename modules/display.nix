@@ -1,6 +1,14 @@
 { pkgs, ... }:
 
 {
+  # This is what actually registers niri as a selectable SDDM session
+  # (installs it system-wide, sets up the .desktop session entry,
+  # xdg-desktop-portal-gnome for screencasting, gnome-keyring). The
+  # home-manager side (programs.niri.settings in
+  # home/desktop/niri.nix) only generates ~/.config/niri/config.kdl —
+  # it was never enough on its own for niri to show up in SDDM.
+  programs.niri.enable = true;
+
   # SDDM Display Manager with Wayland Enabled
   services.displayManager.sddm = {
     enable = true;
