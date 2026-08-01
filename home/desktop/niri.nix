@@ -123,10 +123,16 @@
       # top-level:
       #   blur = { passes = 2; offset = 3.0; noise = 0.03; saturation = 1.0; };
 
-      debug = {
-        # Allows notification actions and window activation from Noctalia.
-        honor-xdg-activation-with-invalid-serial = true;
-      };
+      # NOTE: a `debug { honor-xdg-activation-with-invalid-serial true; }`
+      # block used to be here (recommended by Noctalia's docs for
+      # notification-action/window-activation focus stealing). Removed:
+      # niri's KDL parser rejects it with an argument — "unexpected
+      # argument" — meaning that flag is presence-only in real niri
+      # syntax (bare `honor-xdg-activation-with-invalid-serial;`, no
+      # `true`), not the `= true` boolean niri-flake's schema implied.
+      # Minor convenience flag, not worth chasing further without a way
+      # to verify the exact bare-flag Nix representation against a
+      # real build.
 
       # Autostart Programs
       spawn-at-startup = [
