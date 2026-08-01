@@ -13,7 +13,6 @@ in
       ])
       (plain "touchpad" [
         (flag "tap")
-        (flag "drag")
         (flag "natural-scroll")
       ])
       (plain "mouse" [])
@@ -45,12 +44,12 @@ in
 
     (plain "window-rule" [
       (leaf "geometry-corner-radius" { top-left = 20.0; top-right = 20.0; bottom-left = 20.0; bottom-right = 20.0; })
-      (flag "clip-to-geometry")
+      (leaf "clip-to-geometry" true)
     ])
 
     (plain "window-rule" [
       (leaf "match" { app-id = "^dev\\.noctalia\\.Noctalia$"; })
-      (flag "open-floating")
+      (leaf "open-floating" true)
       (plain "default-column-width" [ (leaf "fixed" 1080) ])
       (plain "default-window-height" [ (leaf "fixed" 920) ])
     ])
@@ -64,7 +63,7 @@ in
 
     (plain "layer-rule" [
       (leaf "match" { namespace = "^noctalia-wallpaper"; })
-      (flag "place-within-backdrop")
+      (leaf "place-within-backdrop" true)
     ])
 
     (plain "layer-rule" [
