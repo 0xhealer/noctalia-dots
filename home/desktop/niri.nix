@@ -61,7 +61,15 @@
       window-rules = [
         {
           # Rounded corners for a modern look; clip contents to match.
-          geometry-corner-radius = 20.0;
+          # This field is a submodule (per-corner), not a bare number —
+          # niri-flake's schema mirrors niri's raw KDL leaf args here
+          # (geometry-corner-radius top-left=… top-right=… etc.).
+          geometry-corner-radius = {
+            top-left = 20.0;
+            top-right = 20.0;
+            bottom-left = 20.0;
+            bottom-right = 20.0;
+          };
           clip-to-geometry = true;
         }
         {
