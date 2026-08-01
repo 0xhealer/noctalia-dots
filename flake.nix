@@ -45,18 +45,13 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    stylix = {
-      url = "github:nix-community/stylix";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     noctalia = {
       url = "github:noctalia-dev/noctalia";
 
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, niri, stylix, noctalia, plasma-manager, spicetify-nix, zen-browser, helium-browser, nix-vscode-extensions, ... }@inputs:
+  outputs = { self, nixpkgs, home-manager, niri, noctalia, plasma-manager, spicetify-nix, zen-browser, helium-browser, nix-vscode-extensions, ... }@inputs:
     let
       system = "x86_64-linux";
     in
@@ -68,7 +63,6 @@
           modules = [
             ./hosts/nixos
             niri.nixosModules.niri
-            stylix.nixosModules.stylix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;

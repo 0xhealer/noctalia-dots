@@ -1,9 +1,6 @@
 { pkgs, config, inputs, lib, ... }:
 
 {
-
-  stylix.targets.niri.enable = true;
-
   programs.niri = {
     settings = {
 
@@ -36,6 +33,8 @@
         focus-ring = {
           enable = true;
           width = 2;
+          active.color = lib.mkForce "#7aa2f7";
+          inactive.color = lib.mkForce "#414868";
         };
 
         border = {
@@ -67,15 +66,38 @@
           default-column-width.fixed = 1080;
           default-window-height.fixed = 920;
         }
+        {
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
       ];
 
       layer-rules = [
         {
-
           matches = [ { namespace = "^noctalia-wallpaper"; } ];
           place-within-backdrop = true;
         }
+        {
+          matches = [ { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; } ];
+          background-effect.xray = false;
+        }
+        {
+          matches = [ { namespace = "noctalia-window-switcher"; } ];
+          background-effect = {
+            blur = true;
+            xray = false;
+          };
+        }
       ];
+
+      blur = {
+        passes = 2;
+        offset = 3.0;
+        noise = 0.03;
+        saturation = 1.0;
+      };
 
       spawn-at-startup = [
         { command = [ "awww-daemon" ]; }

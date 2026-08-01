@@ -1,6 +1,6 @@
 { ... }: {
     imports = [
-        ./stylix.nix
+        ./matugen.nix
         ./gtk.nix
         ./spicetify.nix
     ];

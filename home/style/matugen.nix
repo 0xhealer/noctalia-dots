@@ -1,100 +1,55 @@
 { pkgs, lib, ... }:
 
 {
-  # -------------------------------------------------------------------------
-  # Package Installation
-  # -------------------------------------------------------------------------
   home.packages = with pkgs; [
     matugen
   ];
 
-  # -------------------------------------------------------------------------
-  # Matugen Master Configuration (~/.config/matugen/config.toml)
-  # -------------------------------------------------------------------------
   xdg.configFile."matugen/config.toml".text = ''
     [config]
-    # (no wallpaper_tool key here — that was matugen's pre-1.0 config
-    # syntax; the current schema is the [config.wallpaper] table below)
 
     [config.wallpaper]
-    # awww is swww's upstream rename (binary and nixpkgs package both
-    # renamed — see ../packages.nix and ../desktop/niri.nix). `command`
-    # must be just the executable; args go in `arguments`, not appended
-    # to the command string.
     command = "awww"
     arguments = [ "img", "--transition-type", "outer", "--transition-fps", "60" ]
     set = true
 
-    # --- Target Templates ---
-
-    # 1. Ghostty Terminal Colors
     [templates.ghostty]
     input_path = '~/.config/matugen/templates/ghostty'
     output_path = '~/.config/ghostty/themes/matugen'
 
-    # 2. GTK3 Colors + Transparency
     [templates.gtk3_colors]
     input_path = '~/.config/matugen/templates/colors.css'
     output_path = '~/.config/gtk-3.0/gtk.css'
 
-    # 3. GTK4 Colors + Transparency (libadwaita apps, Nautilus-likes, etc.)
     [templates.gtk4_colors]
     input_path = '~/.config/matugen/templates/colors.css'
     output_path = '~/.config/gtk-4.0/gtk.css'
 
-    # 4. Fuzzel Application Launcher
     [templates.fuzzel]
     input_path = '~/.config/matugen/templates/fuzzel.ini'
     output_path = '~/.config/fuzzel/colors.ini'
 
-    # 5. Alacritty Terminal Colors
     [templates.alacritty]
     input_path = '~/.config/matugen/templates/alacritty.toml'
     output_path = '~/.config/alacritty/colors.toml'
 
-    # 6. Kitty Terminal Colors
     [templates.kitty]
     input_path = '~/.config/matugen/templates/kitty.conf'
     output_path = '~/.config/kitty/colors.conf'
 
-    # 7. Starship Prompt
     [templates.starship]
     input_path = '~/.config/matugen/templates/starship.toml'
     output_path = '~/.config/starship.toml'
 
-    # 8. Fastfetch
     [templates.fastfetch]
     input_path = '~/.config/matugen/templates/fastfetch.jsonc'
     output_path = '~/.config/fastfetch/config.jsonc'
 
-    # 9. Neovim (base16-nvim palette, loaded by ../apps/neovim.nix)
     [templates.nvim]
     input_path = '~/.config/matugen/templates/nvim-colors.lua'
     output_path = '~/.config/nvim/matugen-colors.lua'
   '';
 
-  # NOTE on Niri: there is intentionally no matugen template targeting
-  # niri here. Niri's config (including the focus-ring colors set in
-  # ./niri.nix) is generated at build time from home/desktop/niri.nix —
-  # it has no mechanism to hot-reload an external "colors.kdl" file
-  # produced at runtime, so a template for it would silently do nothing.
-  # If you want the focus ring to follow your wallpaper, update the hex
-  # values in home/desktop/niri.nix and rebuild.
-  #
-  # NOTE on VS Code / Spicetify: these already use a static transparent
-  # theme (see ../apps/vscode.nix and ../style/spicetify.nix) rather than
-  # a matugen template, since VS Code has no built-in mechanism to
-  # hot-reload colors from an external file without a marketplace
-  # extension. They stay visually consistent (transparent, blur-friendly)
-  # but won't shift hue with the wallpaper like the apps below do.
-
-  # -------------------------------------------------------------------------
-  # Template Files
-  # -------------------------------------------------------------------------
-
-  # GTK3/4 CSS Template — palette variables + real transparency, so
-  # GTK windows (Thunar, etc.) are ready to let niri's blur show through
-  # once it's enabled (see the note in ../desktop/niri.nix).
   xdg.configFile."matugen/templates/colors.css".text = ''
     @define-color primary {{colors.primary.default.hex}};
     @define-color on_primary {{colors.on_primary.default.hex}};
@@ -107,9 +62,6 @@
     @define-color error {{colors.error.default.hex}};
     @define-color outline {{colors.outline.default.hex}};
 
-    /* Transparency — ready for niri's blur once it's enabled (see the
-       commented-out block in ../desktop/niri.nix; niri-stable here is
-       pinned below the 26.04 version blur requires) */
     window,
     .background {
       background-color: alpha(@background, 0.85);
@@ -121,7 +73,6 @@
     }
   '';
 
-  # Ghostty Terminal Template
   xdg.configFile."matugen/templates/ghostty".text = ''
     background = {{colors.background.default.hex}}
     foreground = {{colors.on_background.default.hex}}
@@ -137,7 +88,6 @@
     palette = 7={{colors.on_surface.default.hex}}
   '';
 
-  # Fuzzel Launcher Template (Feeds directly into shell.nix include)
   xdg.configFile."matugen/templates/fuzzel.ini".text = ''
     [colors]
     background={{colors.surface.default.hex strip}}dd
@@ -148,7 +98,6 @@
     border={{colors.primary.default.hex strip}}ff
   '';
 
-  # Alacritty Terminal Template (TOML — imported via general.import)
   xdg.configFile."matugen/templates/alacritty.toml".text = ''
     [colors.primary]
     background = "{{colors.background.default.hex}}"
@@ -179,7 +128,6 @@
     white = "{{colors.on_background.default.hex}}"
   '';
 
-  # Kitty Terminal Template (kitty.conf syntax — included via extraConfig)
   xdg.configFile."matugen/templates/kitty.conf".text = ''
     background {{colors.background.default.hex}}
     foreground {{colors.on_background.default.hex}}
@@ -203,10 +151,7 @@
     color15 {{colors.on_background.default.hex}}
   '';
 
-  # Starship Prompt Template — same structure/symbols as before, colors
-  # swapped for matugen tokens. Kept in sync with ../apps/starship.nix.
   xdg.configFile."matugen/templates/starship.toml".text = ''
-    # FIRST LINE/ROW: Info & Status
     [username]
     format = "[힐러](bold {{colors.primary.default.hex}}) @ "
     show_always = true
@@ -256,7 +201,6 @@
     show_notifications = true
     min_time_to_notify = 30000
 
-    # SECOND LINE/ROW: Prompt
     [battery]
     charging_symbol = ""
     disabled = true
@@ -343,7 +287,6 @@
     error_symbol = ""
     success_symbol = "[❯](bold {{colors.tertiary.default.hex}})"
 
-    # Language & Tool Symbols
     [git_commit]
     tag_symbol = "  "
 
@@ -401,45 +344,45 @@
     symbol = " "
   '';
 
-  # Fastfetch Template — same modules/logo as before, key/title colors
-  # now pull from matugen.
   xdg.configFile."matugen/templates/fastfetch.jsonc".text = ''
     {
       "logo": {
-        "type": "kitty-direct",
         "source": "~/.local/share/noctalia-dots/assets/fastfetch/logo.png",
-        "width": 28,
-        "height": 12,
-        "padding": { "top": 1, "left": 2 }
+        "type": "kitty",
+        "height": 18,
+        "padding": { "top": 2, "right": 6 }
       },
-      "display": {
-        "separator": " ➜ ",
-        "color": {
-          "keys": "{{colors.primary.default.hex}}",
-          "title": "{{colors.tertiary.default.hex}}"
-        }
-      },
+      "display": { "separator": " " },
       "modules": [
-        "title",
-        "separator",
-        "os",
-        "host",
-        "kernel",
-        "uptime",
-        "packages",
-        "shell",
-        "wm",
-        "terminal",
-        "cpu",
-        "gpu",
-        "memory",
         "break",
-        "colors"
+        {
+          "type": "custom",
+          "format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m"
+        },
+        "break",
+        { "type": "title", "keyWidth": 10 },
+        "break",
+        { "type": "os", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "kernel", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "packages", "format": "{}", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "shell", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "terminal", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "wm", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "cursor", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "terminalfont", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "uptime", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "datetime", "format": "{1}-{3}-{11}", "key": " ", "keyColor": "{{colors.primary.default.hex}}" },
+        { "type": "media", "key": "󰝚 ", "keyColor": "{{colors.primary.default.hex}}" },
+        "break",
+        {
+          "type": "custom",
+          "format": "\u001b[90m  \u001b[31m  \u001b[32m  \u001b[33m  \u001b[34m  \u001b[35m  \u001b[36m  \u001b[37m"
+        },
+        "break"
       ]
     }
   '';
 
-  # Neovim Template — base16 palette consumed by ../apps/neovim.nix
   xdg.configFile."matugen/templates/nvim-colors.lua".text = ''
     return {
       base00 = "{{colors.background.default.hex}}",
@@ -461,18 +404,6 @@
     }
   '';
 
-  # -------------------------------------------------------------------------
-  # Auto-reapply on every rebuild
-  # -------------------------------------------------------------------------
-  # Every output above (terminal colors, starship.toml, fastfetch config,
-  # the nvim palette, GTK CSS...) lives outside the Nix store on purpose,
-  # so matugen can rewrite it live when you change wallpapers. The catch:
-  # `nixos-rebuild switch` re-links every xdg.configFile target on each
-  # run, which would silently wipe those live colors back to the day-one
-  # fallback below until you next touch your wallpaper. This activation
-  # hook reruns matugen against whatever wallpaper waypaper currently has
-  # configured, right after every switch, so the real palette is restored
-  # automatically instead of you needing to reset the wallpaper by hand.
   home.activation.reapplyMatugen = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     WP_CONFIG="$HOME/.config/waypaper/config.ini"
     if [ -f "$WP_CONFIG" ]; then
@@ -484,14 +415,7 @@
     fi
   '';
 
-  # -------------------------------------------------------------------------
-  # Day-one fallback colors
-  # -------------------------------------------------------------------------
-  # Belt-and-suspenders for the very first activation, in case the hook
-  # above can't find a wallpaper yet (e.g. bootstrap.sh hasn't finished
-  # cloning the wallpapers directory). A Catppuccin Mocha palette,
-  # matching the "Catppuccin" theme picked in ../desktop/noctalia.nix.
-  xdg.configFile."ghostty/themes/matugen".text = ''
+  xdg.configFile."ghostty/themes/matugen".text = lib.mkForce ''
     background = 1e1e2e
     foreground = cdd6f4
     cursor-color = 89b4fa
@@ -506,7 +430,7 @@
     palette = 7=cdd6f4
   '';
 
-  xdg.configFile."fuzzel/colors.ini".text = ''
+  xdg.configFile."fuzzel/colors.ini".text = lib.mkForce ''
     [colors]
     background=313244dd
     text=cdd6f4ff
@@ -516,7 +440,7 @@
     border=89b4faff
   '';
 
-  xdg.configFile."alacritty/colors.toml".text = ''
+  xdg.configFile."alacritty/colors.toml".text = lib.mkForce ''
     [colors.primary]
     background = "#1e1e2e"
     foreground = "#cdd6f4"
@@ -546,7 +470,7 @@
     white = "#cdd6f4"
   '';
 
-  xdg.configFile."kitty/colors.conf".text = ''
+  xdg.configFile."kitty/colors.conf".text = lib.mkForce ''
     background 1e1e2e
     foreground cdd6f4
     cursor 89b4fa
@@ -569,9 +493,6 @@
     color15 cdd6f4
   '';
 
-  # mkForce: guards against home-manager's own starship module also
-  # trying to write this same path (harmless if it doesn't — this just
-  # makes the fallback win deterministically instead of a build conflict).
   xdg.configFile."starship.toml".text = lib.mkForce ''
     [username]
     format = "[힐러](bold #89b4fa) @ "
@@ -596,22 +517,17 @@
     success_symbol = "[❯](bold #a6e3a1)"
   '';
 
-  # mkForce: same reasoning as starship.toml above.
   xdg.configFile."fastfetch/config.jsonc".text = lib.mkForce ''
     {
       "logo": {
-        "type": "kitty-direct",
         "source": "~/.local/share/noctalia-dots/assets/fastfetch/logo.png",
-        "width": 28,
-        "height": 12,
-        "padding": { "top": 1, "left": 2 }
+        "type": "kitty",
+        "height": 18,
+        "padding": { "top": 2, "right": 6 }
       },
-      "display": {
-        "separator": " ➜ ",
-        "color": { "keys": "#89b4fa", "title": "#a6e3a1" }
-      },
+      "display": { "separator": " " },
       "modules": [
-        "title", "separator", "os", "host", "kernel", "uptime",
+        "title", "os", "host", "kernel", "uptime",
         "packages", "shell", "wm", "terminal", "cpu", "gpu", "memory",
         "break", "colors"
       ]

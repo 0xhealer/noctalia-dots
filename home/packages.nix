@@ -8,6 +8,7 @@
 
     waypaper
     awww
+    matugen
     grim
     slurp
     swappy
