@@ -2,6 +2,13 @@
 
 {
 
+  stylix = {
+    enable = true;
+
+    image = ../assets/wallpapers/6.png;
+    polarity = "dark";
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
