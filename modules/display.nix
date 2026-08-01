@@ -9,6 +9,8 @@
     wayland.enable = true;
   };
 
+  services.displayManager.defaultSession = "niri";
+
   security.polkit.enable = true;
 
   systemd.user.services.polkit-kde-authentication-agent-1 = {
