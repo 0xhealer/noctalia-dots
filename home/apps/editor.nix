@@ -22,7 +22,8 @@
       gtk-titlebar = false;
 
       # Path where Matugen writes Ghostty's dynamic color file
-      config-file = "~/.config/ghostty/colors";
+      # (must match [templates.ghostty].output_path in matugen.nix)
+      config-file = "~/.config/ghostty/themes/matugen";
     };
   };
 

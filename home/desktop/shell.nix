@@ -22,18 +22,8 @@
     };
   };
 
-  services.swaync = {
-    enable = true;
-    settings = {
-      positionX = "right";
-      positionY = "top";
-      control-center-width = 380;
-      control-center-height = 600;
-      notification-window-width = 350;
-      keyboard-shortcuts = true;
-      image-visibility = "when-available";
-      transition-time = 200;
-      hide-on-clear = false;
-    };
-  };
+  # NOTE: swaync was removed here. Noctalia now runs as the shell
+  # (see ./noctalia.nix) and provides its own notification center and
+  # control center — running swaync alongside it would mean two daemons
+  # racing to claim the org.freedesktop.Notifications DBus service.
 }

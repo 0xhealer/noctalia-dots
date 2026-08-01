@@ -3,7 +3,9 @@
 {
   home.packages = with pkgs; [
     # Custom Flake Input Packages
-    inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # NOTE: Noctalia itself is installed declaratively by its Home Manager
+    # module (programs.noctalia.enable, see ./desktop/noctalia.nix) — that
+    # module pulls in the package for us, so it isn't listed here.
     inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.helium-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
 
@@ -35,7 +37,6 @@
     spotify
     mpv
     vlc
-    loupe
     vesktop
 
     pkgs.thunar

@@ -5,6 +5,7 @@
     enable = true;
     enableBashIntegration = true;
     enableZshIntegration = true;
+    enableFishIntegration = true; # default shell is fish (see apps/shell.nix)
 
     settings = {
       manager = {

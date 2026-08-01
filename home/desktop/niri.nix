@@ -44,6 +44,46 @@
         border = {
           enable = false;
         };
+
+        # "Option 2: Stationary Wallpaper" from Noctalia's niri docs —
+        # since swww/waypaper already own the wallpaper (Noctalia's own
+        # wallpaper.enabled is set to false in ./noctalia.nix), keep the
+        # workspace background transparent so it stays visible everywhere.
+        background-color = "transparent";
+      };
+
+      overview = {
+        workspace-shadow.off = true;
+      };
+
+      # Noctalia-recommended window/layer rules
+      # https://docs.noctalia.dev/v5/compositor-settings/niri/
+      window-rule = [
+        {
+          # Rounded corners for a modern look; clip contents to match.
+          geometry-corner-radius = 20.0;
+          clip-to-geometry = true;
+        }
+        {
+          # Floating Noctalia settings window.
+          matches = [ { app-id = "^dev\\.noctalia\\.Noctalia$"; } ];
+          open-floating = true;
+          default-column-width.fixed = 1080;
+          default-window-height.fixed = 920;
+        }
+      ];
+
+      layer-rule = [
+        {
+          # Pin the (now stationary) wallpaper layer behind the overview.
+          matches = [ { namespace = "^noctalia-wallpaper"; } ];
+          place-within-backdrop = true;
+        }
+      ];
+
+      debug = {
+        # Allows notification actions and window activation from Noctalia.
+        honor-xdg-activation-with-invalid-serial = true;
       };
 
       # Autostart Programs
@@ -51,6 +91,9 @@
         { command = [ "swww-daemon" ]; }
         { command = [ "waypaper" "--restore" ]; }
         { command = [ "wl-paste" "--watch" "cliphist" "store" ]; }
+        # Launches the Noctalia shell (bar, launcher, notifications,
+        # control center, etc.) at session start.
+        { command = [ "noctalia" ]; }
       ];
 
       # Keybindings
@@ -60,18 +103,26 @@
         "Mod+Shift+Return".action = spawn "kitty";
         "Mod+B".action = spawn "zen";
         "Mod+E".action = spawn "thunar";
-        "Mod+D".action = spawn "fuzzel"; # Or your preferred launcher
+        "Mod+Shift+D".action = spawn "fuzzel"; # Backup launcher, Noctalia's is on Mod+Space
 
         # Screenshots (grim + slurp + swappy)
         "Print".action = spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -";
         "Shift+Print".action = spawn "sh" "-c" "grim ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png";
 
-        # Audio & Media Controls
-        "XF86AudioRaiseVolume".action = spawn "pamixer" "-i" "5";
-        "XF86AudioLowerVolume".action = spawn "pamixer" "-d" "5";
-        "XF86AudioMute".action = spawn "pamixer" "-t";
-        "XF86MonBrightnessUp".action = spawn "brightnessctl" "set" "+10%";
-        "XF86MonBrightnessDown".action = spawn "brightnessctl" "set" "10%-" ;
+        # Noctalia IPC — core panels
+        # https://docs.noctalia.dev/v5/compositor-settings/niri/
+        "Mod+Space".action = spawn "noctalia" "msg" "panel-toggle" "launcher";
+        "Mod+S".action = spawn "noctalia" "msg" "panel-toggle" "control-center";
+        "Mod+Comma".action = spawn "noctalia" "msg" "settings-toggle";
+        "Alt+Tab".action = spawn "noctalia" "msg" "window-switcher";
+
+        # Audio & Brightness — routed through Noctalia so its OSD/UI
+        # stays in sync with the actual state.
+        "XF86AudioRaiseVolume".action = spawn "noctalia" "msg" "volume-up";
+        "XF86AudioLowerVolume".action = spawn "noctalia" "msg" "volume-down";
+        "XF86AudioMute".action = spawn "noctalia" "msg" "volume-mute";
+        "XF86MonBrightnessUp".action = spawn "noctalia" "msg" "brightness-up";
+        "XF86MonBrightnessDown".action = spawn "noctalia" "msg" "brightness-down";
 
         # Window & Column Management
         "Mod+Q".action = close-window;
@@ -113,6 +164,12 @@
         # System Controls
         "Mod+Shift+E".action = quit;
       };
+
+      # Laptop-only: lock + suspend on lid close, routed through Noctalia.
+      # Uncomment if this machine is a laptop (also set HandleLidSwitch and
+      # HandleLidSwitchExternalPower to "ignore" in logind.conf so systemd
+      # doesn't race Noctalia for the lid event).
+      # switch-events.lid-close.action = spawn "noctalia" "msg" "session" "lock-and-suspend";
     };
   };
 }
