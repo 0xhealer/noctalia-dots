@@ -53,7 +53,7 @@
       };
 
       overview = {
-        workspace-shadow.off = true;
+        workspace-shadow.enable = false;
       };
 
       # Noctalia-recommended window/layer rules
@@ -71,18 +71,6 @@
           default-column-width.fixed = 1080;
           default-window-height.fixed = 920;
         }
-        {
-          # Blur behind every window (paired with the GTK/terminal
-          # transparency set in ../style/matugen.nix and ../apps/editor.nix).
-          # xray off so it reads as frosted glass rather than literally
-          # see-through. Requires niri >= 26.04 — if `nixos-rebuild
-          # dry-build` errors on `background-effect`, delete this rule
-          # (and the layer-rules/blur blocks below) and update niri.
-          background-effect = {
-            blur = true;
-            xray = false;
-          };
-        }
       ];
 
       layer-rules = [
@@ -91,27 +79,41 @@
           matches = [ { namespace = "^noctalia-wallpaper"; } ];
           place-within-backdrop = true;
         }
-        {
-          # Noctalia bar/panels/dock/notifications/OSD: keep blur but
-          # disable xray so they stay legible instead of fully see-through.
-          matches = [ { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; } ];
-          background-effect.xray = false;
-        }
-        {
-          matches = [ { namespace = "noctalia-window-switcher"; } ];
-          background-effect = {
-            blur = true;
-            xray = false;
-          };
-        }
       ];
 
-      blur = {
-        passes = 2;
-        offset = 3.0;
-        noise = 0.03;
-        saturation = 1.0;
-      };
+      # -----------------------------------------------------------------
+      # Blur — intentionally NOT enabled.
+      # -----------------------------------------------------------------
+      # Noctalia's own docs are explicit that blur support landed in niri
+      # 26.04 (docs.noctalia.dev/v5/compositor-settings/niri/#blur), and
+      # this flake's `pkgs.niri-stable` (what `programs.niri.package`
+      # uses by default — see ../../flake.nix) is pinned to niri 25.08.
+      # `background-effect`/a top-level `blur` block on an older niri
+      # either don't exist in the schema or get rejected by `niri
+      # validate` at build time — not a naming typo to fix, a genuine
+      # version gap. Transparency (GTK CSS alpha, terminal
+      # background-opacity, fuzzel alpha) is untouched by this and still
+      # works today; only the compositor-side blur-behind-windows effect
+      # is affected.
+      #
+      # To enable it once you're on niri >= 26.04 (e.g. by setting
+      # `programs.niri.package = pkgs.niri-unstable;`, using the
+      # `niri.overlays.niri` overlay), uncomment this block and merge it
+      # into window-rules/layer-rules above:
+      #
+      # window-rules extra entry:
+      #   { background-effect = { blur = true; xray = false; }; }
+      # layer-rules extra entries:
+      #   {
+      #     matches = [ { namespace = "^noctalia-(bar-[^\"]+|notification|dock|panel|attached-panel|osd)$"; } ];
+      #     background-effect.xray = false;
+      #   }
+      #   {
+      #     matches = [ { namespace = "noctalia-window-switcher"; } ];
+      #     background-effect = { blur = true; xray = false; };
+      #   }
+      # top-level:
+      #   blur = { passes = 2; offset = 3.0; noise = 0.03; saturation = 1.0; };
 
       debug = {
         # Allows notification actions and window activation from Noctalia.

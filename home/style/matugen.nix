@@ -86,8 +86,8 @@
   # -------------------------------------------------------------------------
 
   # GTK3/4 CSS Template — palette variables + real transparency, so
-  # GTK windows (Thunar, etc.) actually let niri's blur show through
-  # instead of just defining unused @define-color variables.
+  # GTK windows (Thunar, etc.) are ready to let niri's blur show through
+  # once it's enabled (see the note in ../desktop/niri.nix).
   xdg.configFile."matugen/templates/colors.css".text = ''
     @define-color primary {{colors.primary.default.hex}};
     @define-color on_primary {{colors.on_primary.default.hex}};
@@ -100,7 +100,9 @@
     @define-color error {{colors.error.default.hex}};
     @define-color outline {{colors.outline.default.hex}};
 
-    /* Transparency — pairs with the niri blur rules in ../desktop/niri.nix */
+    /* Transparency — ready for niri's blur once it's enabled (see the
+       commented-out block in ../desktop/niri.nix; niri-stable here is
+       pinned below the 26.04 version blur requires) */
     window,
     .background {
       background-color: alpha(@background, 0.85);
