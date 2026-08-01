@@ -3,6 +3,7 @@
 {
   stylix = {
     enable = true;
+    autoEnable = false;
 
     image = ../../assets/wallpapers/6.png;
 
@@ -54,7 +55,6 @@
       ghostty.enable = true;
       gtk.enable = true;
       qt.enable = true;
-      starship.enable = false;
     };
   };
 }
