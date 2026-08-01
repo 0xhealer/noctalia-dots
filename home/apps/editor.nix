@@ -1,14 +1,16 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   # -------------------------------------------------------------------------
-  # Ghostty Terminal (Imports Matugen Colors)
+  # Ghostty Terminal
   # -------------------------------------------------------------------------
+  # No confirmed Stylix target for Ghostty (see ../style/stylix.nix) —
+  # colors are hand-wired directly from config.lib.stylix.colors, which
+  # is Stylix's own documented mechanism for targets it doesn't natively
+  # support. Regenerates whenever stylix.image changes + rebuild.
   programs.ghostty = {
     enable = true;
     enableFishIntegration = true;
-    # enableBashIntegration = true;
-    # enableZshIntegration = true;
 
     settings = {
       font-family = "Hack Nerd Font";
@@ -21,22 +23,41 @@
       gtk-single-instance = true;
       gtk-titlebar = false;
 
-      # Path where Matugen writes Ghostty's dynamic color file
-      # (must match [templates.ghostty].output_path in matugen.nix)
-      config-file = "~/.config/ghostty/themes/matugen";
+      background = config.lib.stylix.colors.withHashtag.base00;
+      foreground = config.lib.stylix.colors.withHashtag.base05;
+      cursor-color = config.lib.stylix.colors.withHashtag.base0D;
+      palette = [
+        "0=${config.lib.stylix.colors.withHashtag.base00}"
+        "1=${config.lib.stylix.colors.withHashtag.base08}"
+        "2=${config.lib.stylix.colors.withHashtag.base0B}"
+        "3=${config.lib.stylix.colors.withHashtag.base0A}"
+        "4=${config.lib.stylix.colors.withHashtag.base0D}"
+        "5=${config.lib.stylix.colors.withHashtag.base0E}"
+        "6=${config.lib.stylix.colors.withHashtag.base0C}"
+        "7=${config.lib.stylix.colors.withHashtag.base05}"
+        "8=${config.lib.stylix.colors.withHashtag.base03}"
+        "9=${config.lib.stylix.colors.withHashtag.base08}"
+        "10=${config.lib.stylix.colors.withHashtag.base0B}"
+        "11=${config.lib.stylix.colors.withHashtag.base0A}"
+        "12=${config.lib.stylix.colors.withHashtag.base0D}"
+        "13=${config.lib.stylix.colors.withHashtag.base0E}"
+        "14=${config.lib.stylix.colors.withHashtag.base0C}"
+        "15=${config.lib.stylix.colors.withHashtag.base07}"
+      ];
     };
   };
 
   # -------------------------------------------------------------------------
-  # Kitty Terminal (Includes Matugen Colors)
+  # Kitty Terminal
   # -------------------------------------------------------------------------
+  # Colors owned entirely by Stylix's kitty target now (stylix.targets.
+  # kitty.enable in ../style/stylix.nix) — no manual color include here
+  # anymore. Only non-color behavior settings stay in this file.
   programs.kitty = {
     enable = true;
     shellIntegration = {
-    enableFishIntegration = true;
-    # enableBashIntegration = true;
-    # enableZshIntegration = true;
-  };
+      enableFishIntegration = true;
+    };
 
     settings = {
       font_family = "Hack Nerd Font";
@@ -47,25 +68,18 @@
       window_padding_width = 12;
       hide_window_decorations = "yes";
     };
-
-    # Includes the active Matugen dynamic color file
-    extraConfig = ''
-      include ~/.config/kitty/colors.conf
-    '';
   };
 
   # -------------------------------------------------------------------------
-  # Alacritty Terminal (Imports Matugen Colors)
+  # Alacritty Terminal
   # -------------------------------------------------------------------------
+  # Colors owned entirely by Stylix's alacritty target now
+  # (stylix.targets.alacritty.enable in ../style/stylix.nix) — no manual
+  # color import here anymore.
   programs.alacritty = {
     enable = true;
 
     settings = {
-      # Imports the active Matugen dynamic TOML palette
-      general = {
-        import = [ "~/.config/alacritty/colors.toml" ];
-      };
-
       window = {
         opacity = 0.85;
         padding = {

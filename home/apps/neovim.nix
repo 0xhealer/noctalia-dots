@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
+let
+  c = config.lib.stylix.colors.withHashtag;
+in
 {
   # -------------------------------------------------------------------------
   # Declarative Neovim Configuration
@@ -31,8 +34,8 @@
       # LSP & Completion
       nvim-lspconfig
 
-      # Colorscheme — colors come from a Matugen-generated Lua file
-      # loaded at the top of initLua below.
+      # Colorscheme — colors come from Stylix, interpolated directly at
+      # build time at the top of initLua below.
       base16-nvim
 
       # Navigation & UI Tools
@@ -50,14 +53,19 @@
     # Embedded Lua Configuration (init.lua)
     # -----------------------------------------------------------------------
     initLua = ''
-      -- Matugen-driven colorscheme (base16), regenerated on every wallpaper
-      -- change by the same matugen run that themes the terminal/starship/
-      -- fastfetch (see ../style/matugen.nix). Falls back to no colorscheme
-      -- on a very first boot before matugen has ever produced this file.
-      local ok, base16_colors = pcall(dofile, vim.fn.expand('~/.config/nvim/matugen-colors.lua'))
-      if ok and base16_colors then
-        require('base16-colorscheme').setup(base16_colors)
-      end
+    initLua = ''
+      -- Stylix-driven colorscheme (base16), interpolated at build time —
+      -- see ../style/stylix.nix for how the underlying palette is
+      -- generated, and its comment for what "dynamic" means with Stylix
+      -- (regenerates per-rebuild, not live).
+      require('base16-colorscheme').setup({
+        base00 = "${c.base00}", base01 = "${c.base01}", base02 = "${c.base02}",
+        base03 = "${c.base03}", base04 = "${c.base04}", base05 = "${c.base05}",
+        base06 = "${c.base06}", base07 = "${c.base07}", base08 = "${c.base08}",
+        base09 = "${c.base09}", base0A = "${c.base0A}", base0B = "${c.base0B}",
+        base0C = "${c.base0C}", base0D = "${c.base0D}", base0E = "${c.base0E}",
+        base0F = "${c.base0F}",
+      })
 
       -- Don't let Neovim paint its own opaque background — the terminal
       -- (Ghostty/Kitty/Alacritty) already supplies transparency via

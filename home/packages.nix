@@ -12,7 +12,6 @@
     # Wayland, Theming & Desktop Utilities
     waypaper
     awww
-    matugen
     grim
     slurp
     swappy

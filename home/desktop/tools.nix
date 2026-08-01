@@ -26,7 +26,13 @@
     sort = name
     subfolders = False
     number_of_columns = 3
-    post_command = matugen image $wallpaper
+    # NOTE: no post_command here anymore. The old `matugen image
+    # $wallpaper` trigger doesn't apply — Stylix (../style/stylix.nix)
+    # computes colors at build time from stylix.image, not live from
+    # whichever wallpaper waypaper currently has selected. Changing the
+    # wallpaper here only changes what's displayed; to actually re-theme
+    # the desktop, update stylix.image to point at the new file and run
+    # `nixos-rebuild switch`.
     swww_transition_type = outer
     swww_transition_step = 90
     swww_transition_angle = 30

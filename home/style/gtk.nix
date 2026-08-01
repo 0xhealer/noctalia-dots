@@ -2,28 +2,17 @@
 
 {
   # -------------------------------------------------------------------------
-  # GTK Config (Font, Icons, & Dark Mode Defaults)
+  # GTK Config
   # -------------------------------------------------------------------------
+  # font, iconTheme, and cursorTheme used to be set here — all three are
+  # now owned by Stylix instead (../style/stylix.nix: stylix.fonts,
+  # stylix.iconTheme, stylix.cursor / home.pointerCursor via the cursor
+  # target). Setting them in both places would fight over the same
+  # options, so only the dark-mode preference (not a color, just a
+  # flag Stylix doesn't touch) stays here.
   gtk = {
     enable = true;
 
-    font = {
-      name = "JetBrainsMono Nerd Font";
-      size = 11;
-    };
-
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.papirus-icon-theme;
-    };
-
-    cursorTheme = {
-      name = "Bibata-Modern-Classic";
-      package = pkgs.bibata-cursors;
-      size = 24;
-    };
-
-    # Force dark variant preference globally (Colors supplied dynamically via Matugen)
     gtk3.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
@@ -31,17 +20,5 @@
     gtk4.extraConfig = {
       gtk-application-prefer-dark-theme = 1;
     };
-  };
-
-  # -------------------------------------------------------------------------
-  # Global Pointer Cursor (Niri / Wayland & XWayland apps)
-  # -------------------------------------------------------------------------
-  home.pointerCursor = {
-    enable = true;
-    name = "Bibata-Modern-Classic";
-    package = pkgs.bibata-cursors;
-    size = 24;
-    gtk.enable = true;
-    x11.enable = true;
   };
 }

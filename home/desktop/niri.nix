@@ -1,7 +1,14 @@
 { pkgs, config, inputs, lib, ... }:
 
 {
-  programs.niri = { 
+  # niri-flake's own Stylix integration (border colors, cursor) -- see
+  # the comment on layout.focus-ring below for how this interacts with
+  # our own settings.
+  stylix.targets.niri.enable = true;
+
+  programs.niri = {
+    enable = true; # not implied here the way it was by the NixOS module
+
     # Settings configuration
     settings = {
       # Input Settings
@@ -33,12 +40,17 @@
         default-column-width = {
           proportion = 0.5;
         };
-        
+
+        # focus-ring colors are intentionally NOT set here anymore —
+        # niri-flake's own Stylix integration (auto-imported once it
+        # detects Stylix is enabled system-wide; see ../style/stylix.nix
+        # and the stylix.targets.niri.enable line below) sets them from
+        # the same wallpaper-derived palette as everything else, via
+        # mkDefault. Setting them explicitly here would just override
+        # that with a static color again.
         focus-ring = {
           enable = true;
           width = 2;
-          active.color = lib.mkForce "#7aa2f7";
-          inactive.color = lib.mkForce "#414868";
         };
 
         border = {
