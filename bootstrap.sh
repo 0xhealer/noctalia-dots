@@ -20,23 +20,7 @@ if ! command -v git &> /dev/null; then
   export PATH="$(nix-build '<nixpkgs>' -A git --no-out-link)/bin:$PATH"
 fi
 
-echo "==> Step 2: Adding swap as an OOM safety net for the build..."
-if ! swapon --show=NAME --noheadings | grep -q "/swapfile"; then
-  if [ ! -f /swapfile ]; then
-    sudo fallocate -l 4G /swapfile
-    sudo chmod 600 /swapfile
-    sudo mkswap /swapfile
-  fi
-  sudo swapon /swapfile
-  if ! grep -q "^/swapfile" /etc/fstab 2>/dev/null; then
-    echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab > /dev/null
-  fi
-  echo "--> Swap active: $(free -h | awk '/Swap/ {print $2}')"
-else
-  echo "--> Swap already active, skipping."
-fi
-
-echo "==> Step 3: Syncing dotfiles repository..."
+echo "==> Step 2: Syncing dotfiles repository..."
 mkdir -p "$(dirname "$TARGET_DIR")"
 if [ ! -d "$TARGET_DIR/.git" ]; then
   git clone "$REPO_URL" "$TARGET_DIR"
@@ -48,17 +32,17 @@ fi
 
 cd "$TARGET_DIR"
 
-echo "==> Step 4: Copying system hardware configuration..."
+echo "==> Step 3: Copying system hardware configuration..."
 mkdir -p hosts/nixos
 if [ -f /etc/nixos/hardware-configuration.nix ]; then
   cp -f /etc/nixos/hardware-configuration.nix hosts/nixos/hardware-configuration.nix
 fi
 
-echo "==> Step 5: Staging files for Nix Flakes..."
+echo "==> Step 4: Staging files for Nix Flakes..."
 git add -f hosts/nixos/hardware-configuration.nix
 git add -A
 
-echo "==> Step 6: Clearing stale Home Manager backup files from earlier runs..."
+echo "==> Step 5: Clearing stale Home Manager backup files from earlier runs..."
 # Home Manager refuses to overwrite an existing "<file>.$BACKUP_EXT" rather
 # than risk destroying something you meant to keep -- but on a rerun after
 # an earlier partial/failed activation, those backups are just leftover
@@ -66,7 +50,13 @@ echo "==> Step 6: Clearing stale Home Manager backup files from earlier runs..."
 # activation isn't blocked waiting on manual cleanup.
 find "$HOME" -maxdepth 3 -name "*.${BACKUP_EXT}" -print -delete 2>/dev/null || true
 
-echo "==> Step 7: Rebuilding system with Flakes (this can take a while on first run)..."
+echo "==> Step 6: Rebuilding system with Flakes (this can take a while on first run)..."
+# NOTE: swap is no longer set up here with shell commands -- on NixOS,
+# /etc/fstab is generated declaratively and read-only at runtime, so
+# `tee -a /etc/fstab` (what an earlier version of this script tried)
+# fails outright. Swap is now declared as swapDevices in
+# modules/system.nix instead, and gets created automatically as part
+# of the rebuild below -- no separate step needed here.
 sudo NIX_CONFIG="experimental-features = nix-command flakes
 accept-flake-config = true" nixos-rebuild switch --flake .#nixos --impure
 
